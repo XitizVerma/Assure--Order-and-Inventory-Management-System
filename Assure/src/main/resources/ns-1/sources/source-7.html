@@ -1,0 +1,206 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ProductApi</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.Assure.api</a>
+</div>
+
+<h1>Coverage Summary for Class: ProductApi (com.increff.Assure.api)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProductApi</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (20/32)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ProductApi$$EnhancerBySpringCGLIB$$7f13ccad</td>
+  </tr>
+  <tr>
+    <td class="name">ProductApi$$EnhancerBySpringCGLIB$$7f13ccad$$FastClassBySpringCGLIB$$ac1e0b71</td>
+  </tr>
+  <tr>
+    <td class="name">ProductApi$$FastClassBySpringCGLIB$$b2a991bc</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (20/32)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.Assure.api;
+&nbsp;
+&nbsp;import com.increff.model.data.ErrorData;
+&nbsp;import com.increff.Assure.pojo.ProductPojo;
+&nbsp;import com.increff.Assure.util.ValidationUtil;
+&nbsp;import com.increff.Assure.dao.ProductDao;
+&nbsp;import com.increff.exception.ApiException;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;import static java.util.Objects.isNull;
+&nbsp;
+&nbsp;@Service
+&nbsp;@Transactional(rollbackFor = ApiException.class)
+<b class="fc">&nbsp;public class ProductApi {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ProductDao productDao;
+&nbsp;
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public List&lt;ProductPojo&gt; selectAll()
+&nbsp;    {
+<b class="fc">&nbsp;        return productDao.selectAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public ProductPojo selectById(Long id)throws ApiException
+&nbsp;    {
+<b class="fc">&nbsp;        return getCheckId(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public ProductPojo getCheckId(Long id)throws ApiException
+&nbsp;    {
+<b class="fc">&nbsp;        ProductPojo productPojo = productDao.selectById(id);</b>
+<b class="fc">&nbsp;        if(isNull(productPojo))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new ApiException(&quot;GlobalSkuid does not exist &quot; + id);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return productPojo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void bulkAdd(List&lt;ProductPojo&gt; productPojoList)throws ApiException
+&nbsp;    {
+<b class="fc">&nbsp;        Long clientId = productPojoList.get(0).getClientId();</b>
+<b class="fc">&nbsp;        List&lt;ErrorData&gt; errorDataList = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        List&lt;ProductPojo&gt; productPojoByClientList = productDao.selectByClientId(clientId);</b>
+<b class="fc">&nbsp;        Set&lt;String&gt; clientSkuIdSet = new HashSet&lt;&gt;();</b>
+<b class="fc">&nbsp;        for(ProductPojo productPojo : productPojoByClientList)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            clientSkuIdSet.add(productPojo.getClientSkuId());</b>
+<b class="nc">&nbsp;        }</b>
+<b class="fc">&nbsp;        Long row =1L;</b>
+<b class="fc">&nbsp;        for(ProductPojo productPojo : productPojoList)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            if(clientSkuIdSet.contains(productPojo.getClientSkuId()))</b>
+&nbsp;            {
+<b class="nc">&nbsp;                errorDataList.add(new ErrorData(row,&quot;ClientSkuId - ClientId pair already exists ClientID : &quot; + clientId + &quot; , ClientSkuId &quot; + productPojo.getClientSkuId()));</b>
+&nbsp;            }
+<b class="fc">&nbsp;            row++;</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        ValidationUtil.throwErrorIfNotEmpty(errorDataList);</b>
+&nbsp;
+<b class="fc">&nbsp;        for(ProductPojo productPojo : productPojoList)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            productDao.add(productPojo);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void update(ProductPojo productPojo,Long globalSkuId)throws ApiException
+&nbsp;    {
+<b class="nc">&nbsp;        ProductPojo productPojo2 = getCheckId(globalSkuId);</b>
+<b class="nc">&nbsp;        productPojo2.setClientSkuId(productPojo.getClientSkuId());</b>
+<b class="nc">&nbsp;        productPojo2.setClientId(productPojo.getClientId());</b>
+<b class="nc">&nbsp;        productPojo2.setName(productPojo.getName());</b>
+<b class="nc">&nbsp;        productPojo2.setBrandId(productPojo.getBrandId());</b>
+<b class="nc">&nbsp;        productPojo2.setMrp(productPojo.getMrp());</b>
+<b class="nc">&nbsp;        productPojo2.setDescription(productPojo.getDescription());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public ProductPojo selectByClientSkuIdandClientId(String clientSkuId, Long clientId)
+&nbsp;    {
+<b class="nc">&nbsp;        return productDao.selectByClientSkuIdandClientId(clientSkuId,clientId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

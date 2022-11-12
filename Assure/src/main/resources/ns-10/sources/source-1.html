@@ -1,0 +1,133 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > OrderForm</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.model.form</a>
+</div>
+
+<h1>Coverage Summary for Class: OrderForm (com.increff.model.form)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OrderForm</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.model.form;
+&nbsp;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.Setter;
+&nbsp;
+&nbsp;import javax.validation.constraints.NotBlank;
+&nbsp;import javax.validation.constraints.NotEmpty;
+&nbsp;import javax.validation.constraints.NotNull;
+&nbsp;import javax.validation.constraints.PositiveOrZero;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Getter
+<b class="nc">&nbsp;@Setter</b>
+<b class="nc">&nbsp;public class OrderForm {</b>
+&nbsp;
+&nbsp;    @PositiveOrZero
+<b class="nc">&nbsp;    Long clientId;</b>
+&nbsp;
+&nbsp;    @NotBlank
+<b class="nc">&nbsp;    String channelOrderId;</b>
+&nbsp;
+&nbsp;    @PositiveOrZero
+<b class="nc">&nbsp;    Long customerId;</b>
+&nbsp;
+&nbsp;    @PositiveOrZero
+<b class="nc">&nbsp;    Long channelId;</b>
+&nbsp;
+&nbsp;    @NotEmpty
+<b class="nc">&nbsp;    List&lt;@NotNull OrderItemForm&gt; orderItemFormList;</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

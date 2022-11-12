@@ -1,0 +1,239 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ProductDtoHelper</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.Assure.dto.dtoHelper</a>
+</div>
+
+<h1>Coverage Summary for Class: ProductDtoHelper (com.increff.Assure.dto.dtoHelper)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProductDtoHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.1%
+  </span>
+  <span class="absValue">
+    (52/59)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.Assure.dto.dtoHelper;
+&nbsp;
+&nbsp;import com.increff.model.data.ErrorData;
+&nbsp;import com.increff.Assure.model.data.ProductData;
+&nbsp;import com.increff.Assure.model.form.ProductForm;
+&nbsp;import com.increff.Assure.pojo.ProductPojo;
+&nbsp;import com.increff.Assure.util.ValidationUtil;
+&nbsp;import com.increff.exception.ApiException;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.HashSet;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import static java.util.Objects.isNull;
+&nbsp;
+<b class="nc">&nbsp;public class ProductDtoHelper</b>
+&nbsp;{
+&nbsp;
+&nbsp;    public static List&lt;ProductData&gt; convertProductPojoListtoProductDataList(List&lt;ProductPojo&gt; productPojoList)
+&nbsp;    {
+<b class="fc">&nbsp;        List&lt;ProductData&gt; productDataList = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for(ProductPojo productPojo : productPojoList)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            productDataList.add(convertProductPojotoProductData(productPojo));</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return productDataList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static ProductData convertProductPojotoProductData(ProductPojo productPojo)
+&nbsp;    {
+<b class="fc">&nbsp;        ProductData productData = new ProductData();</b>
+<b class="fc">&nbsp;        productData.setGlobalSkuId(productPojo.getGlobalSkuId());</b>
+<b class="fc">&nbsp;        productData.setClientSkuId(productPojo.getClientSkuId());</b>
+<b class="fc">&nbsp;        productData.setClientId(productPojo.getClientId());</b>
+<b class="fc">&nbsp;        productData.setName(productPojo.getName());</b>
+<b class="fc">&nbsp;        productData.setBrandId(productPojo.getBrandId());</b>
+<b class="fc">&nbsp;        productData.setMrp(productPojo.getMrp());</b>
+<b class="fc">&nbsp;        productData.setDescription(productPojo.getDescription());</b>
+<b class="fc">&nbsp;        return productData;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    public static List&lt;ProductPojo&gt; convertProductFormListtoProductPojoList(List&lt;ProductForm&gt; productFormList, Long clientId)
+&nbsp;    {
+<b class="fc">&nbsp;        List&lt;ProductPojo&gt; productPojoList = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for(ProductForm productForm : productFormList)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            productPojoList.add(convertProductFormtoProductPojo(productForm,clientId));</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return productPojoList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static ProductPojo convertProductFormtoProductPojo(ProductForm productForm,Long clientId)
+&nbsp;    {
+<b class="fc">&nbsp;        ProductPojo productPojo = new ProductPojo();</b>
+<b class="fc">&nbsp;        productPojo.setClientId(clientId);</b>
+<b class="fc">&nbsp;        productPojo.setClientSkuId(productForm.getClientSkuId());</b>
+<b class="fc">&nbsp;        productPojo.setName(productForm.getName());</b>
+<b class="fc">&nbsp;        productPojo.setBrandId(productForm.getBrandId());</b>
+<b class="fc">&nbsp;        productPojo.setMrp(productForm.getMrp());</b>
+<b class="fc">&nbsp;        productPojo.setDescription(productForm.getDescription());</b>
+<b class="fc">&nbsp;        return productPojo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static void checkDuplicateProducts(List&lt;ProductForm&gt; productFormList)throws ApiException
+&nbsp;    {
+&nbsp;        //Comparing bulkUploads via storing clientSkuid in a HashSet
+<b class="fc">&nbsp;        HashSet&lt;String&gt; hashSet = new HashSet&lt;&gt;();</b>
+<b class="fc">&nbsp;        List&lt;ErrorData&gt; errorDataList = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        Long row = 1L;</b>
+<b class="fc">&nbsp;        for(ProductForm productForm : productFormList)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            if(hashSet.contains(productForm.getClientSkuId()))</b>
+&nbsp;            {
+<b class="nc">&nbsp;                errorDataList.add(new ErrorData(row,&quot;Duplicate values of ClientSkuid &quot; + productForm.getClientSkuId()));</b>
+&nbsp;            }
+<b class="fc">&nbsp;            hashSet.add(productForm.getClientSkuId());</b>
+<b class="fc">&nbsp;            row++;</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        ValidationUtil.throwErrorIfNotEmpty(errorDataList);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public static void validateList(List&lt;ProductForm&gt; productFormList,Long MAX_LIST_SIZE)throws ApiException
+&nbsp;    {
+<b class="fc">&nbsp;        for(ProductForm productForm : productFormList)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            validate(productForm);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        ValidationUtil.validateListSize(&quot;ProductList&quot;,productFormList,MAX_LIST_SIZE);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static void normalizeList(List&lt;ProductForm&gt; productFormList)
+&nbsp;    {
+<b class="fc">&nbsp;        for(ProductForm productForm : productFormList)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            normalize(productForm);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;    public static void validate(ProductForm productForm)throws ApiException
+&nbsp;    {
+<b class="fc">&nbsp;        if(isNull(productForm.getClientSkuId()) || productForm.getClientSkuId().isEmpty())</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new ApiException(&quot;ClientSkuId cannot be null or empty&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(isNull(productForm.getName()) || productForm.getName().isEmpty())</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new ApiException(&quot;Productname cannot be null or empty&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(isNull(productForm.getBrandId()) || productForm.getBrandId().isEmpty())</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new ApiException(&quot;BrandId cannot be null or empty&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(isNull(productForm.getMrp()) || !(productForm.getMrp()&gt;0))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new ApiException(&quot;Mrp cannot be null or less than 0.0&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(isNull(productForm.getDescription()) || productForm.getDescription().isEmpty())</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new ApiException(&quot;Description cannot be null or empty&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public static ProductForm normalize(ProductForm productForm)
+&nbsp;    {
+<b class="fc">&nbsp;        productForm.setName(productForm.getName().trim().toLowerCase());</b>
+<b class="fc">&nbsp;        productForm.setBrandId(productForm.getBrandId().trim().toLowerCase());</b>
+<b class="fc">&nbsp;        productForm.setDescription(productForm.getDescription().trim().toLowerCase());</b>
+<b class="fc">&nbsp;        return productForm;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

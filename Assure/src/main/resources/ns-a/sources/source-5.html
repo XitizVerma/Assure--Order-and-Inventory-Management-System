@@ -1,0 +1,159 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ValidationUtil</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.Assure.util</a>
+</div>
+
+<h1>Coverage Summary for Class: ValidationUtil (com.increff.Assure.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ValidationUtil</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (5/20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.Assure.util;
+&nbsp;
+&nbsp;import com.increff.exception.ApiException;
+&nbsp;import com.increff.model.data.ErrorData;
+&nbsp;import org.springframework.util.CollectionUtils;
+&nbsp;
+&nbsp;import javax.validation.ConstraintViolation;
+&nbsp;import javax.validation.Validation;
+&nbsp;import javax.validation.Validator;
+&nbsp;import javax.validation.ValidatorFactory;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Set;
+&nbsp;
+<b class="nc">&nbsp;public class ValidationUtil</b>
+&nbsp;{
+<b class="fc">&nbsp;    private static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();</b>
+<b class="fc">&nbsp;    private static final Validator validator = factory.getValidator();</b>
+&nbsp;
+&nbsp;    public static &lt;T&gt; void validateList(String name, List&lt;T&gt;formList, Long maxListSize)throws ApiException
+&nbsp;    {
+<b class="nc">&nbsp;        validateListSize(name,formList,maxListSize);</b>
+<b class="nc">&nbsp;        List&lt;ErrorData&gt; errorFormList = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        Long row = 1L;</b>
+<b class="nc">&nbsp;        for(T form : formList)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            Set&lt;ConstraintViolation&lt;T&gt;&gt; constraintViolationSet = validator.validate(form);</b>
+<b class="nc">&nbsp;            for(ConstraintViolation&lt;T&gt; constraintViolation : constraintViolationSet)</b>
+&nbsp;            {
+<b class="nc">&nbsp;                errorFormList.add(new ErrorData(row, constraintViolation.getPropertyPath().toString() + &quot; &quot; + constraintViolation.getMessage()));</b>
+&nbsp;
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            row++;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        throwErrorIfNotEmpty(errorFormList);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static void throwErrorIfNotEmpty(List&lt;ErrorData&gt; errorFormList) throws ApiException
+&nbsp;    {
+<b class="fc">&nbsp;        if(CollectionUtils.isEmpty(errorFormList)==false)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new ApiException(errorFormList);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    public static &lt;T&gt; void validateListSize(String name,List&lt;T&gt;formList,Long maxListSize)throws ApiException
+&nbsp;    {
+<b class="fc">&nbsp;        if(CollectionUtils.isEmpty(formList))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new ApiException(name + &quot; List cannot be empty&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(formList.size()&gt;maxListSize)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new ApiException(name + &quot; List size is more than limit, limit : &quot; + maxListSize);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

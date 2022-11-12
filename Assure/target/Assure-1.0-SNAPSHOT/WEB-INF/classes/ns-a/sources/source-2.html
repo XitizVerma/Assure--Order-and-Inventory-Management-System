@@ -1,0 +1,170 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > InvoiceUtil</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.Assure.util</a>
+</div>
+
+<h1>Coverage Summary for Class: InvoiceUtil (com.increff.Assure.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InvoiceUtil</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.Assure.util;
+&nbsp;
+&nbsp;import com.increff.Assure.model.data.InvoiceData;
+&nbsp;import org.apache.fop.apps.*;
+&nbsp;
+&nbsp;import javax.xml.bind.JAXBContext;
+&nbsp;import javax.xml.bind.JAXBException;
+&nbsp;import javax.xml.bind.Marshaller;
+&nbsp;import javax.xml.transform.*;
+&nbsp;import javax.xml.transform.sax.SAXResult;
+&nbsp;import javax.xml.transform.stream.StreamSource;
+&nbsp;import java.io.*;
+&nbsp;
+<b class="nc">&nbsp;public class InvoiceUtil</b>
+&nbsp;{
+<b class="nc">&nbsp;    private static final FopFactory fopFactory = FopFactory.newInstance(new File(&quot;.&quot;).toURI());</b>
+&nbsp;
+&nbsp;    public static String jaxbObjectToXML(InvoiceData invoiceData)
+&nbsp;    {
+&nbsp;        try{
+&nbsp;
+<b class="nc">&nbsp;            JAXBContext jaxbContext = JAXBContext.newInstance(InvoiceData.class);</b>
+<b class="nc">&nbsp;            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();</b>
+<b class="nc">&nbsp;            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);</b>
+<b class="nc">&nbsp;            StringWriter sw = new StringWriter();</b>
+<b class="nc">&nbsp;            jaxbMarshaller.marshal(invoiceData,sw);</b>
+<b class="nc">&nbsp;            String xmlContent = sw.toString();</b>
+<b class="nc">&nbsp;            return xmlContent;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (JAXBException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return &quot;&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static void convertToPDF(InvoiceData invoiceData, File xslt, File pdf , String xml)throws IOException, TransformerException
+&nbsp;    {
+<b class="nc">&nbsp;        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();</b>
+<b class="nc">&nbsp;        OutputStream out = new java.io.FileOutputStream(pdf);</b>
+<b class="nc">&nbsp;        out = new java.io.BufferedOutputStream(out);</b>
+&nbsp;        try{
+<b class="nc">&nbsp;            Fop fop = null;</b>
+&nbsp;            try{
+<b class="nc">&nbsp;                fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent,out);</b>
+<b class="nc">&nbsp;            }catch (FOPException e)</b>
+&nbsp;            {
+<b class="nc">&nbsp;                throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            TransformerFactory factory = TransformerFactory.newInstance();</b>
+<b class="nc">&nbsp;            Transformer transformer = factory.newTransformer(new StreamSource(xslt));</b>
+&nbsp;
+<b class="nc">&nbsp;            Source src = new StreamSource(new StringReader(xml));</b>
+&nbsp;
+<b class="nc">&nbsp;            Result res = new SAXResult(fop.getDefaultHandler());</b>
+<b class="nc">&nbsp;            transformer.transform(src,res);</b>
+<b class="nc">&nbsp;        }catch (FOPException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+&nbsp;        }
+&nbsp;        finally {
+<b class="nc">&nbsp;            out.close();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

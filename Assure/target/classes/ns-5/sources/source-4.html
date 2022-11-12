@@ -1,0 +1,142 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ChannelListingDtoHelper</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.Assure.dto.dtoHelper</a>
+</div>
+
+<h1>Coverage Summary for Class: ChannelListingDtoHelper (com.increff.Assure.dto.dtoHelper)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ChannelListingDtoHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.Assure.dto.dtoHelper;
+&nbsp;
+&nbsp;import com.increff.exception.ApiException;
+&nbsp;import com.increff.model.data.ErrorData;
+&nbsp;import com.increff.Assure.model.form.ChannelListingForm;
+&nbsp;import com.increff.Assure.util.ValidationUtil;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.HashSet;
+&nbsp;import java.util.List;
+&nbsp;
+<b class="nc">&nbsp;public class ChannelListingDtoHelper</b>
+&nbsp;{
+&nbsp;
+&nbsp;    public static void checkDuplicateChannelListingFormList(List&lt;ChannelListingForm&gt; channelListingFormList)throws ApiException
+&nbsp;    {
+<b class="nc">&nbsp;        HashSet&lt;String&gt; hashSetChannelSkuId = new HashSet&lt;&gt;();</b>
+<b class="nc">&nbsp;        HashSet&lt;String&gt; hashSetClientSkuId = new HashSet&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;ErrorData&gt; errorDataList = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        Long row = 1L;</b>
+<b class="nc">&nbsp;        for(ChannelListingForm channelListingForm : channelListingFormList)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            if(hashSetChannelSkuId.contains(channelListingForm.getChannelSkuId()))</b>
+&nbsp;            {
+<b class="nc">&nbsp;                errorDataList.add(new ErrorData(row,&quot;Duplicate Values of ChannelSkuId&quot;));</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if(hashSetClientSkuId.contains(channelListingForm.getClientSkuId()))</b>
+&nbsp;            {
+<b class="nc">&nbsp;                errorDataList.add(new ErrorData(row, &quot;Duplicate Values of ClientSkuId&quot;));</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            hashSetChannelSkuId.add(channelListingForm.getChannelSkuId());</b>
+<b class="nc">&nbsp;            hashSetClientSkuId.add(channelListingForm.getClientSkuId());</b>
+<b class="nc">&nbsp;            row++;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        ValidationUtil.throwErrorIfNotEmpty(errorDataList);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

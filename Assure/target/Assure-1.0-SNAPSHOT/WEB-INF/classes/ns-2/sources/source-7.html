@@ -1,0 +1,151 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ProductController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.Assure.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: ProductController (com.increff.Assure.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProductController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/5)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.Assure.controller;
+&nbsp;
+&nbsp;import com.increff.Assure.model.data.ProductData;
+&nbsp;import com.increff.Assure.dto.ProductDto;
+&nbsp;import com.increff.exception.ApiException;
+&nbsp;import com.increff.Assure.model.form.ProductForm;
+&nbsp;import io.swagger.annotations.Api;
+&nbsp;import io.swagger.annotations.ApiOperation;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Api
+&nbsp;@RestController
+<b class="fc">&nbsp;public class ProductController</b>
+&nbsp;{
+&nbsp;    @Autowired
+&nbsp;    private ProductDto productDto;
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Gets All Product Details&quot;)
+&nbsp;    @RequestMapping(path = &quot;/products&quot;,method = RequestMethod.GET)
+&nbsp;    public List&lt;ProductData&gt; getAll()
+&nbsp;    {
+<b class="fc">&nbsp;        return productDto.getAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Get Product by GlobalSkuId&quot;)
+&nbsp;    @RequestMapping(path = &quot;/products/{globalSkuId}&quot;, method = RequestMethod.GET)
+&nbsp;    public ProductData getProductById(@PathVariable Long globalSkuId)throws ApiException
+&nbsp;    {
+<b class="fc">&nbsp;        return productDto.getProductById(globalSkuId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Add Bulk Product Details&quot;)
+&nbsp;    @RequestMapping(path = &quot;/products&quot;, method = RequestMethod.POST)
+&nbsp;    public void bulkAdd(@RequestBody List&lt;ProductForm&gt; productFormList, @RequestParam Long clientId)throws ApiException
+&nbsp;    {
+<b class="fc">&nbsp;        productDto.bulkAdd(productFormList,clientId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiOperation(value = &quot;Update Product Details&quot;)
+&nbsp;    @RequestMapping(path = &quot;/products/{globalSkuId}&quot;, method = RequestMethod.PUT)
+&nbsp;    public void update(@RequestBody ProductForm productForm, @PathVariable Long globalSkuId)throws ApiException
+&nbsp;    {
+<b class="nc">&nbsp;        productDto.update(productForm,globalSkuId);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

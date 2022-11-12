@@ -1,0 +1,150 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > OrderDao</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.Assure.dao</a>
+</div>
+
+<h1>Coverage Summary for Class: OrderDao (com.increff.Assure.dao)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OrderDao</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11.1%
+  </span>
+  <span class="absValue">
+    (1/9)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">OrderDao$$EnhancerBySpringCGLIB$$d9d9ead0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11.1%
+  </span>
+  <span class="absValue">
+    (1/9)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.Assure.dao;
+&nbsp;
+&nbsp;import com.increff.Assure.pojo.OrderPojo;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import javax.persistence.TypedQuery;
+&nbsp;
+&nbsp;@Repository
+&nbsp;@Transactional
+<b class="fc">&nbsp;public class OrderDao extends AbstractDao</b>
+&nbsp;{
+&nbsp;    private static final String SELECT_BY_ORDER_ID = &quot;select p from OrderPojo p where id=:id&quot;;
+&nbsp;
+&nbsp;    private static final String SELECT_BY_CHANNEL_ID_AND_CHANNEL_ORDER_ID = &quot;select p from OrderPojo p&quot; +
+&nbsp;            &quot; where channelId=:channelId and channelOrderId=:channelOrderId&quot;;
+&nbsp;    public void add(OrderPojo orderPojo)
+&nbsp;    {
+<b class="nc">&nbsp;        addAbs(orderPojo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public OrderPojo selectById(Long id)
+&nbsp;    {
+<b class="nc">&nbsp;        TypedQuery&lt;OrderPojo&gt; query = em().createQuery(SELECT_BY_ORDER_ID, OrderPojo.class);</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;id&quot;,id);</b>
+<b class="nc">&nbsp;        return (OrderPojo) getSingle(query);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public OrderPojo selectByChannelIdAndChannelOrderId(Long channelId, String channelOrderId)
+&nbsp;    {
+<b class="nc">&nbsp;        TypedQuery&lt;OrderPojo&gt; query = em().createQuery(SELECT_BY_CHANNEL_ID_AND_CHANNEL_ORDER_ID, OrderPojo.class);</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;channelId&quot;,channelId);</b>
+<b class="nc">&nbsp;        query.setParameter(&quot;channelOrderId&quot;,channelOrderId);</b>
+<b class="nc">&nbsp;        return (OrderPojo) getSingle(query);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,199 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ChannelListingDto</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.Assure.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: ChannelListingDto (com.increff.Assure.dto)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ChannelListingDto</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.1%
+  </span>
+  <span class="absValue">
+    (2/28)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ChannelListingDto$$EnhancerBySpringCGLIB$$15dc48f</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.1%
+  </span>
+  <span class="absValue">
+    (2/28)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.Assure.dto;
+&nbsp;
+&nbsp;import com.increff.Assure.pojo.ChannelListingPojo;
+&nbsp;import com.increff.Assure.api.ChannelApi;
+&nbsp;import com.increff.Assure.api.ChannelListingApi;
+&nbsp;import com.increff.Assure.api.ProductApi;
+&nbsp;import com.increff.Assure.api.UserApi;
+&nbsp;import com.increff.exception.ApiException;
+&nbsp;import com.increff.model.data.ErrorData;
+&nbsp;import com.increff.Assure.model.form.ChannelListingForm;
+&nbsp;import com.increff.Assure.model.form.ChannelListingUploadForm;
+&nbsp;import com.increff.Assure.pojo.ProductPojo;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import static com.increff.Assure.dto.dtoHelper.ChannelListingDtoHelper.checkDuplicateChannelListingFormList;
+&nbsp;import static com.increff.Assure.util.ValidationUtil.throwErrorIfNotEmpty;
+&nbsp;import static com.increff.Assure.util.ValidationUtil.validateListSize;
+&nbsp;import static java.util.Objects.isNull;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class ChannelListingDto</b>
+&nbsp;{
+&nbsp;
+<b class="fc">&nbsp;    private static final Long MAX_LIST_SIZE = 1000L;</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ChannelListingApi channelListingApi;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserApi userApi;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ProductApi productApi;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ChannelApi channelApi;
+&nbsp;
+&nbsp;    @Transactional(rollbackFor = ApiException.class)
+&nbsp;    public Integer add(ChannelListingUploadForm channelListingUploadForm)throws ApiException
+&nbsp;    {
+&nbsp;        //TODO : validateForm(channelListingUploadForm);
+<b class="nc">&nbsp;        validateListSize(&quot;Channel Listing Form List&quot;,channelListingUploadForm.getChannelListingFormList(),MAX_LIST_SIZE);</b>
+<b class="nc">&nbsp;        checkDuplicateChannelListingFormList(channelListingUploadForm.getChannelListingFormList());</b>
+&nbsp;
+<b class="nc">&nbsp;        Long clientId = channelListingUploadForm.getClientId();</b>
+<b class="nc">&nbsp;        Long channelId = channelListingUploadForm.getChannelId();</b>
+<b class="nc">&nbsp;        userApi.getCheck(clientId);</b>
+<b class="nc">&nbsp;        channelApi.getCheck(channelId);</b>
+&nbsp;
+<b class="nc">&nbsp;        channelListingApi.add(convertChannelListingFormToPojo(clientId,channelId,channelListingUploadForm.getChannelListingFormList()));</b>
+<b class="nc">&nbsp;        return channelListingUploadForm.getChannelListingFormList().size();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    private List&lt;ChannelListingPojo&gt; convertChannelListingFormToPojo(Long clientId, Long channelId, List&lt;ChannelListingForm&gt; channelListingFormList)throws ApiException
+&nbsp;    {
+<b class="nc">&nbsp;        List&lt;ChannelListingPojo&gt; channelListingPojoList = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;ErrorData&gt; errorDataList = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        Long row = 1L;</b>
+<b class="nc">&nbsp;        for(ChannelListingForm channelListingForm : channelListingFormList)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            ChannelListingPojo channelListingPojo = new ChannelListingPojo();</b>
+<b class="nc">&nbsp;            ProductPojo productPojo = productApi.selectByClientSkuIdandClientId(channelListingForm.getClientSkuId(), clientId);</b>
+<b class="nc">&nbsp;            if(isNull(productPojo))</b>
+&nbsp;            {
+<b class="nc">&nbsp;                errorDataList.add(new ErrorData(row,&quot;Client Sku Id does not exist&quot;));</b>
+<b class="nc">&nbsp;                continue;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            channelListingPojo.setChannelId(channelId);</b>
+<b class="nc">&nbsp;            channelListingPojo.setChannelSkuId(channelListingForm.getChannelSkuId());</b>
+<b class="nc">&nbsp;            channelListingPojo.setClientId(clientId);</b>
+<b class="nc">&nbsp;            channelListingPojo.setGlobalSkuId(productPojo.getGlobalSkuId());</b>
+<b class="nc">&nbsp;            channelListingPojoList.add(channelListingPojo);</b>
+<b class="nc">&nbsp;            row++;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        throwErrorIfNotEmpty(errorDataList);</b>
+<b class="nc">&nbsp;        return channelListingPojoList;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

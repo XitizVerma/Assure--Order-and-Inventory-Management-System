@@ -1,0 +1,375 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > OrderDto</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.Assure.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: OrderDto (com.increff.Assure.dto)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OrderDto</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (2/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.2%
+  </span>
+  <span class="absValue">
+    (5/119)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">OrderDto$$EnhancerBySpringCGLIB$$2cf6e2b0</td>
+  </tr>
+  <tr>
+    <td class="name">OrderDto$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    15.4%
+  </span>
+  <span class="absValue">
+    (2/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.2%
+  </span>
+  <span class="absValue">
+    (5/120)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.Assure.dto;
+&nbsp;
+&nbsp;import com.google.common.collect.ImmutableMap;
+&nbsp;import com.increff.Assure.api.*;
+&nbsp;import com.increff.model.data.ErrorData;
+&nbsp;import com.increff.Assure.model.data.InvoiceData;
+&nbsp;import com.increff.Assure.model.data.OrderItemData;
+&nbsp;import com.increff.model.form.OrderForm;
+&nbsp;import com.increff.model.form.OrderItemForm;
+&nbsp;import com.increff.Assure.model.form.OrderStatusUpdateForm;
+&nbsp;import com.increff.Assure.pojo.*;
+&nbsp;import com.increff.Assure.util.InvoiceUtil;
+&nbsp;import com.increff.Assure.util.OrderStatus;
+&nbsp;import com.increff.Assure.util.UserType;
+&nbsp;import com.increff.exception.ApiException;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;import org.springframework.web.client.RestTemplate;
+&nbsp;
+&nbsp;import javax.xml.transform.TransformerException;
+&nbsp;import java.io.File;
+&nbsp;import java.io.IOException;
+&nbsp;import java.time.ZonedDateTime;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;import static com.increff.Assure.dto.dtoHelper.OrderDtoHelper.*;
+&nbsp;import static com.increff.Assure.util.ValidationUtil.throwErrorIfNotEmpty;
+&nbsp;import static com.increff.Assure.util.ValidationUtil.validateList;
+&nbsp;import static java.util.Objects.isNull;
+&nbsp;
+&nbsp;@Service
+&nbsp;@Transactional(rollbackFor = ApiException.class)
+<b class="fc">&nbsp;public class OrderDto {</b>
+&nbsp;
+<b class="fc">&nbsp;    private final RestTemplate restTemplate = new RestTemplate();</b>
+&nbsp;
+<b class="fc">&nbsp;    private final static Long MAX_LIST_SIZE = 1000L;</b>
+&nbsp;
+&nbsp;    private final static String INTERNAL_CHANNEL = &quot;INTERNAL&quot;;
+&nbsp;
+&nbsp;    private final static Map&lt;OrderStatus, OrderStatus&gt; validStatusUpdateMap =
+<b class="fc">&nbsp;            ImmutableMap.&lt;OrderStatus, OrderStatus&gt;builder()</b>
+<b class="fc">&nbsp;                    .put(OrderStatus.CREATED, OrderStatus.ALLOCATED).put(OrderStatus.ALLOCATED, OrderStatus.FULFILLED).build();</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private OrderApi orderApi;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserApi userApi;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ChannelApi channelApi;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ProductApi productApi;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private InventoryApi inventoryApi;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private BinSkuApi binSkuApi;
+&nbsp;
+&nbsp;    public Integer add(OrderForm orderForm) throws ApiException {
+<b class="nc">&nbsp;        List&lt;OrderItemForm&gt; orderItemFormList = orderForm.getOrderItemFormList();</b>
+<b class="nc">&nbsp;        validateList(&quot;Order Item List&quot;, orderItemFormList, MAX_LIST_SIZE);</b>
+<b class="nc">&nbsp;        checkDuplicateClientSkuIds(orderItemFormList);</b>
+&nbsp;
+<b class="nc">&nbsp;        userApi.checkByIdAndType(orderForm.getClientId(), UserType.CLIENT);</b>
+<b class="nc">&nbsp;        userApi.checkByIdAndType(orderForm.getCustomerId(), UserType.CUSTOMER);</b>
+&nbsp;
+<b class="nc">&nbsp;        ChannelPojo channelPojo = channelApi.selectByChannelName(INTERNAL_CHANNEL);</b>
+<b class="nc">&nbsp;        if (isNull(channelPojo)) {</b>
+<b class="nc">&nbsp;            throw new ApiException(INTERNAL_CHANNEL + &quot; channel does not exist&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Long channelId = channelPojo.getId();</b>
+<b class="nc">&nbsp;        String channelOrderId = orderForm.getChannelOrderId();</b>
+<b class="nc">&nbsp;        checkChannelIdAndChannelPairNotExist(channelId, channelOrderId);</b>
+&nbsp;
+<b class="nc">&nbsp;        Map&lt;String, Long&gt; clientSkuIdtoGlobalSkuIdMap = getCheckClientSkuIdGlobalSkuIdMap(orderItemFormList, orderForm.getClientId());</b>
+<b class="nc">&nbsp;        OrderPojo orderPojo = convertOrderFormtoOrderPojo(orderForm);</b>
+<b class="nc">&nbsp;        List&lt;OrderItemPojo&gt; orderItemPojoList = convertOrderItemFormListtoOrderItemPojoList(orderItemFormList, clientSkuIdtoGlobalSkuIdMap);</b>
+<b class="nc">&nbsp;        orderApi.add(orderPojo, orderItemPojoList);</b>
+<b class="nc">&nbsp;        return orderItemFormList.size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void updateStatus(OrderStatusUpdateForm orderStatusUpdateForm) throws ApiException {
+&nbsp;        //TODO: validateForm(orderStatusUpdateForm);
+<b class="nc">&nbsp;        OrderPojo orderPojo = orderApi.getCheck(orderStatusUpdateForm.getOrderId());</b>
+&nbsp;
+<b class="nc">&nbsp;        if (validStatusUpdateMap.get(orderPojo.getStatus()) != orderStatusUpdateForm.getUpdateStatusTo()) {</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Invalid Order Update Status&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        OrderStatus orderStatus = validStatusUpdateMap.get(orderPojo.getStatus());</b>
+<b class="nc">&nbsp;        switch (orderStatus) {</b>
+&nbsp;            case ALLOCATED:
+<b class="nc">&nbsp;                allocateOrder(orderStatusUpdateForm.getOrderId());</b>
+<b class="nc">&nbsp;                break;</b>
+&nbsp;            case FULFILLED:
+<b class="nc">&nbsp;                fulfillOrder(orderStatusUpdateForm.getOrderId());</b>
+&nbsp;                break;
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public static void checkDuplicateClientSkuIds(List&lt;OrderItemForm&gt; orderItemFormList) throws ApiException {
+<b class="nc">&nbsp;        HashSet&lt;String&gt; hashSetClientSkuId = new HashSet&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;ErrorData&gt; errorDataList = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        Long row = 1L;</b>
+<b class="nc">&nbsp;        for (OrderItemForm orderItemForm : orderItemFormList) {</b>
+<b class="nc">&nbsp;            if (hashSetClientSkuId.contains(orderItemForm.getClientSkuId())) {</b>
+<b class="nc">&nbsp;                errorDataList.add(new ErrorData(row, &quot;Duplicate clientSkuId&quot;));</b>
+&nbsp;            }
+<b class="nc">&nbsp;            hashSetClientSkuId.add(orderItemForm.getClientSkuId());</b>
+<b class="nc">&nbsp;            row++;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        throwErrorIfNotEmpty(errorDataList);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Map&lt;String, Long&gt; getCheckClientSkuIdGlobalSkuIdMap(List&lt;OrderItemForm&gt; orderItemFormList, Long clientId) throws ApiException {
+<b class="nc">&nbsp;        Map&lt;String, Long&gt; clientSkuIdToGlobalSkuIdMap = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;ErrorData&gt; errorDataList = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        Long row = 1L;</b>
+&nbsp;
+<b class="nc">&nbsp;        for (OrderItemForm orderItemForm : orderItemFormList) {</b>
+<b class="nc">&nbsp;            ProductPojo productPojo = productApi.selectByClientSkuIdandClientId(orderItemForm.getClientSkuId(), clientId);</b>
+<b class="nc">&nbsp;            if (isNull(productPojo)) {</b>
+<b class="nc">&nbsp;                errorDataList.add(new ErrorData(row, &quot;clientSkuId does not exist&quot;));</b>
+<b class="nc">&nbsp;                continue;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            clientSkuIdToGlobalSkuIdMap.put(orderItemForm.getClientSkuId(), productPojo.getGlobalSkuId());</b>
+<b class="nc">&nbsp;            row++;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        throwErrorIfNotEmpty(errorDataList);</b>
+&nbsp;
+<b class="nc">&nbsp;        return clientSkuIdToGlobalSkuIdMap;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void checkChannelIdAndChannelPairNotExist(Long channelId, String channelOrderId) throws ApiException {
+<b class="nc">&nbsp;        if (!isNull(orderApi.selectByChannelIdAndChannelOrderId(channelId, channelOrderId))) {</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Channel Order Id already exists for this Channel&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void allocateOrder(Long id) throws ApiException {
+<b class="nc">&nbsp;        OrderPojo orderPojo = orderApi.getCheck(id);</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;OrderItemPojo&gt; orderItemPojoList = orderApi.selectOrderItemListByOrderId(id);</b>
+<b class="nc">&nbsp;        Map&lt;OrderItemPojo, InventoryPojo&gt; orderItemPojoInventoryQtyMap = getOrderItemPojoInvQtyMap(orderItemPojoList);</b>
+<b class="nc">&nbsp;        Long countOfFullyAllocatedItems = 0L;</b>
+&nbsp;
+<b class="nc">&nbsp;        for (OrderItemPojo orderItemPojo : orderItemPojoList) {</b>
+<b class="nc">&nbsp;            Long invQty = orderItemPojoInventoryQtyMap.get(orderItemPojo).getAvailableQuantity();</b>
+<b class="nc">&nbsp;            Long allocatedQty = orderApi.allocateOrderItemQty(orderItemPojo, invQty);</b>
+<b class="nc">&nbsp;            inventoryApi.allocateQty(allocatedQty, orderItemPojo.getGlobalSkuId());</b>
+<b class="nc">&nbsp;            binSkuApi.allocateQty(allocatedQty, orderItemPojo.getGlobalSkuId());</b>
+&nbsp;
+<b class="nc">&nbsp;            if (orderItemPojo.getOrderedQuantity() == orderItemPojo.getAllocatedQuantity())</b>
+<b class="nc">&nbsp;                countOfFullyAllocatedItems++;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        if (countOfFullyAllocatedItems == orderItemPojoList.size())</b>
+<b class="nc">&nbsp;            orderApi.updateStatus(id, OrderStatus.ALLOCATED);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void fulfillOrder(Long id) throws ApiException {
+<b class="nc">&nbsp;        OrderPojo orderPojo = orderApi.getCheck(id);</b>
+<b class="nc">&nbsp;        List&lt;OrderItemPojo&gt; orderItemPojoList = orderApi.selectOrderItemListByOrderId(id);</b>
+<b class="nc">&nbsp;        for (OrderItemPojo orderItemPojo : orderItemPojoList) {</b>
+<b class="nc">&nbsp;            Long fulfilledQty = orderApi.fulfillQty(orderItemPojo);</b>
+<b class="nc">&nbsp;            inventoryApi.fulfillQty(fulfilledQty, orderItemPojo.getGlobalSkuId());</b>
+&nbsp;
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        orderApi.updateStatus(id, OrderStatus.FULFILLED);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public Map&lt;OrderItemPojo, InventoryPojo&gt; getOrderItemPojoInvQtyMap(List&lt;OrderItemPojo&gt; orderItemPojoList) throws ApiException {
+<b class="nc">&nbsp;        Map&lt;OrderItemPojo, InventoryPojo&gt; orderItemPojoInventoryPojoMap = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;ErrorData&gt; errorDataList = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        Long row = 1L;</b>
+&nbsp;
+<b class="nc">&nbsp;        for (OrderItemPojo orderItemPojo : orderItemPojoList) {</b>
+<b class="nc">&nbsp;            InventoryPojo inventoryPojo = inventoryApi.selectByGlobalSkuId(orderItemPojo.getGlobalSkuId());</b>
+<b class="nc">&nbsp;            if (isNull(inventoryPojo)) {</b>
+<b class="nc">&nbsp;                errorDataList.add(new ErrorData(row, &quot;Inventory for orderItem does not exist&quot;));</b>
+&nbsp;            } else
+<b class="nc">&nbsp;                orderItemPojoInventoryPojoMap.put(orderItemPojo, inventoryPojo);</b>
+<b class="nc">&nbsp;            row++;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        throwErrorIfNotEmpty(errorDataList);</b>
+<b class="nc">&nbsp;        return orderItemPojoInventoryPojoMap;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public String getInvoice(Long orderId) throws ApiException, IOException, TransformerException {
+<b class="nc">&nbsp;        OrderPojo orderPojo = orderApi.getCheck(orderId);</b>
+<b class="nc">&nbsp;        if (orderPojo.getStatus() != OrderStatus.FULFILLED) {</b>
+<b class="nc">&nbsp;            throw new ApiException(&quot;Order should be fulfilled for invoice generation&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (!isNull(orderPojo.getInvoiceUrl())) {</b>
+<b class="nc">&nbsp;            return orderPojo.getInvoiceUrl();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        String url = null;</b>
+<b class="nc">&nbsp;        Long internalChannelId = channelApi.selectByChannelName(INTERNAL_CHANNEL).getId();</b>
+<b class="nc">&nbsp;        if (orderPojo.getChannelId().equals(internalChannelId)) {</b>
+<b class="nc">&nbsp;            url = createPDFAndGetUrl(orderId);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            url = createPDFAndGetUrl(orderId);</b>
+&nbsp;
+&nbsp;        }
+<b class="nc">&nbsp;        orderApi.setUrl(orderId, url);</b>
+<b class="nc">&nbsp;        return url;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private String createPDFAndGetUrl(Long orderId) throws ApiException, IOException, TransformerException {
+<b class="nc">&nbsp;        OrderPojo orderPojo = orderApi.getCheck(orderId);</b>
+<b class="nc">&nbsp;        List&lt;OrderItemPojo&gt; orderItemPojoList = orderApi.selectOrderItemListByOrderId(orderId);</b>
+<b class="nc">&nbsp;        List&lt;OrderItemData&gt; orderItemDataList = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (OrderItemPojo orderItemPojo : orderItemPojoList) {</b>
+<b class="nc">&nbsp;            String clientSkuId = productApi.selectById(orderItemPojo.getGlobalSkuId()).getClientSkuId();</b>
+<b class="nc">&nbsp;            OrderItemData orderItemData = convertOrderItemPojotoOrderItemData(orderItemPojo, clientSkuId);</b>
+<b class="nc">&nbsp;            orderItemDataList.add(orderItemData);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        ZonedDateTime time = orderPojo.getCreatedAt();</b>
+<b class="nc">&nbsp;        Double total = 0.0;</b>
+<b class="nc">&nbsp;        for (OrderItemData orderItemData : orderItemDataList) {</b>
+<b class="nc">&nbsp;            total += orderItemData.getOrderedQuantity() * orderItemData.getSellingPricePerUnit();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        InvoiceData invoiceData = new InvoiceData(time, orderId, orderItemDataList, total);</b>
+&nbsp;
+<b class="nc">&nbsp;        String xml = InvoiceUtil.jaxbObjectToXML(invoiceData);</b>
+<b class="nc">&nbsp;        File xsltFile = new File(&quot;src&quot;, &quot;invoice.xml&quot;);</b>
+<b class="nc">&nbsp;        File pdfFile = new File(&quot;src&quot;, &quot;invoice.pdf&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(xml);</b>
+<b class="nc">&nbsp;        InvoiceUtil.convertToPDF(invoiceData, xsltFile, pdfFile, xml);</b>
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

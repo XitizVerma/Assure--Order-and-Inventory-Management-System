@@ -1,0 +1,187 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > InventoryApi</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.increff.Assure.api</a>
+</div>
+
+<h1>Coverage Summary for Class: InventoryApi (com.increff.Assure.api)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InventoryApi</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.3%
+  </span>
+  <span class="absValue">
+    (1/23)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">InventoryApi$$EnhancerBySpringCGLIB$$9096c526</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.3%
+  </span>
+  <span class="absValue">
+    (1/23)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.increff.Assure.api;
+&nbsp;
+&nbsp;import com.increff.exception.ApiException;
+&nbsp;import com.increff.Assure.dao.InventoryDao;
+&nbsp;import com.increff.Assure.pojo.InventoryPojo;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import static java.util.Objects.isNull;
+&nbsp;
+&nbsp;@Service
+&nbsp;@Transactional(rollbackFor = ApiException.class)
+<b class="fc">&nbsp;public class InventoryApi</b>
+&nbsp;{
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private InventoryDao inventoryDao;
+&nbsp;
+&nbsp;    public void add(List&lt;InventoryPojo&gt; inventoryPojoList)
+&nbsp;    {
+<b class="nc">&nbsp;        for(InventoryPojo inventoryPojo : inventoryPojoList)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            InventoryPojo exists = inventoryDao.selectByGlobalSkuId(inventoryPojo.getGlobalSkuId());</b>
+<b class="nc">&nbsp;            if(isNull(exists))</b>
+&nbsp;            {
+<b class="nc">&nbsp;                inventoryPojo.setFulfilledQuanity(0L);</b>
+<b class="nc">&nbsp;                inventoryPojo.setAllocatedQuantity(0L);</b>
+<b class="nc">&nbsp;                inventoryDao.add(inventoryPojo);</b>
+&nbsp;            }
+&nbsp;            else
+&nbsp;            {
+<b class="nc">&nbsp;                exists.setAvailableQuantity(exists.getAvailableQuantity()+inventoryPojo.getAvailableQuantity());</b>
+<b class="nc">&nbsp;                inventoryDao.update();</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public InventoryPojo selectByGlobalSkuId(Long globalSkuId)
+&nbsp;    {
+<b class="nc">&nbsp;        return inventoryDao.selectByGlobalSkuId(globalSkuId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void allocateQty(Long allocateQty, Long globalSkuId)throws ApiException
+&nbsp;    {
+<b class="nc">&nbsp;        InventoryPojo inventoryPojo = getCheckByGlobalSkuID(globalSkuId);</b>
+<b class="nc">&nbsp;        inventoryPojo.setAvailableQuantity(inventoryPojo.getAvailableQuantity()-allocateQty);</b>
+<b class="nc">&nbsp;        inventoryPojo.setAllocatedQuantity(inventoryPojo.getAllocatedQuantity()+allocateQty);</b>
+<b class="nc">&nbsp;        inventoryDao.update();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public void fulfillQty(Long fulfilledQty,Long globalSkuId)throws ApiException
+&nbsp;    {
+<b class="nc">&nbsp;        InventoryPojo inventoryPojo = getCheckByGlobalSkuID(globalSkuId);</b>
+<b class="nc">&nbsp;        inventoryPojo.setAllocatedQuantity(inventoryPojo.getAllocatedQuantity()-fulfilledQty);</b>
+<b class="nc">&nbsp;        inventoryPojo.setFulfilledQuanity(inventoryPojo.getFulfilledQuanity()+fulfilledQty);</b>
+<b class="nc">&nbsp;        inventoryDao.update();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public InventoryPojo getCheckByGlobalSkuID(Long globalSkuId)throws ApiException
+&nbsp;    {
+<b class="nc">&nbsp;        InventoryPojo inventoryPojo = selectByGlobalSkuId(globalSkuId);</b>
+<b class="nc">&nbsp;        if(isNull(inventoryPojo))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new ApiException(&quot;Inventory with globalSkuId does not exist&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return inventoryPojo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-11-03 11:43</div>
+</div>
+</body>
+</html>

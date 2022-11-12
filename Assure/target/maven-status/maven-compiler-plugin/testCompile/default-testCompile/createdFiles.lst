@@ -1,0 +1,11 @@
+com/increff/Assure/controller/BinControllerTest.class
+com/increff/Assure/controller/UserControllerTest.class
+com/increff/Assure/controller/BinSkuControllerTest.class
+com/increff/Assure/controller/ChannelControllerTest.class
+com/increff/Assure/controller/OrderControllerTest.class
+com/increff/Assure/controller/ChannelListingControllerTest.class
+com/increff/Assure/controller/QAConfig.class
+com/increff/Assure/util/RandomUtil.class
+com/increff/Assure/controller/AbstractUnitTest.class
+com/increff/Assure/controller/ProductControllerTest.class
+com/increff/Assure/dao/UserDaoTest.class
